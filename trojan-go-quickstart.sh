@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-sh_ver="0.1.0"
+sh_ver="0.1.1"
 
 function prompt() {
   while true; do
@@ -129,43 +129,42 @@ EOF
     fi
   fi
 
-  echo Updating new GEO files...
+  echo Updating geoip/geosite files...
   wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geosite.dat -O ${INSTALLPREFIX}/etc/${NAME}/geosite.dat
   wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geoip.dat -O ${INSTALLPREFIX}/etc/${NAME}/geoip.dat
 
-  echo Deleting temp directory ${TMPDIR}...
+  echo 删除临时目录 ${TMPDIR}...
   rm -rf "${TMPDIR}"
 
-  echo Done!
+  echo -e "Trojan-go 安装成功! 请修改配置文件: ${CONFIGPATH}"
 }
 
 update_trojan_go() {
   if [[ ${trojan_go_ver} != ${TROJAN_GO_VER_LATEST} ]]; then
-    echo -e " ${Green_font_prefix} 咦...发现新版本....正在拼命更新....${Font_color_suffix}"
+    echo -e " ${Green_font_prefix} 发现新版本..正在更新..${Font_color_suffix}"
     echo
-    echo "最新版本: ${TROJAN_GO_VER_LATEST}"
+    echo -e "最新版本: ${TROJAN_GO_VER_LATEST}"
 
-    echo Entering temp directory ${TMPDIR}...
+    echo -e "Entering temp directory ${TMPDIR}..."
     cd ${TMPDIR}
 
-    echo Downloading ${NAME} ${TROJAN_GO_VER_LATEST}...
+    echo -e "Downloading ${NAME} ${TROJAN_GO_VER_LATEST}..."
     wget -q "${DOWNLOADURL}" -O trojan-go.zip
     unzip -q trojan-go.zip && rm -rf trojan-go.zip
     cd ${NAME}
 
-    echo Installing ${NAME} ${TROJAN_GO_VER_LATEST} to ${BINARYPATH}...
     install -Dm755 "${NAME}" "${BINARYPATH}"
 
     do_service restart trojan-go
     echo
-    echo -e " ${Green_font_prefix} 更新成功啦...${Font_color_suffix} 当前 Trojan-go 版本: $v2ray_latest_ver"
+    echo -e " ${Green_font_prefix} 更新成功..${Font_color_suffix} 当前 Trojan-go 版本: $v2ray_latest_ver"
   else
-    echo -e " ${Green_font_prefix} 没有发现新版本....${Font_color_suffix}"
+    echo -e " ${Green_font_prefix} 没有发现新版本..${Font_color_suffix}"
   fi
 }
 
 update_trojan_go_sh() {
-  echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
+  echo -e "当前版本为 ${Green_font_prefix}v.${sh_ver}${Font_color_suffix}, 开始检测最新版本.."
   sh_new_ver=$(wget --no-check-certificate -qO- "https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh" | grep 'sh_ver="' | awk -F "=" '{print $NF}' | sed 's/\"//g' | head -1)
   [[ -z ${sh_new_ver} ]] && echo -e "${Red_font_prefix}[错误]${Font_color_suffix} 检测最新版本失败 !" && start_menu
 
@@ -177,11 +176,11 @@ update_trojan_go_sh() {
       wget -N --no-check-certificate https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh && chmod +x trojan-go-quickstart.sh
       echo -e "脚本已更新为最新版本[ ${sh_new_ver} ] !"
     else
-      echo && echo "	已取消..." && echo
+      echo && echo "  已取消..." && echo
     fi
   else
-    echo -e "当前已是最新版本[ ${sh_new_ver} ] !"
-    sleep 5s
+    echo
+    echo -e "当前已是最新版本 v.${sh_new_ver}!"
   fi
 }
 
@@ -214,8 +213,8 @@ start_menu() {
   
   ${Green_font_prefix}1.${Font_color_suffix} 安装 Trojan-go
   ${Green_font_prefix}2.${Font_color_suffix} 升级 Trojan-go
-  ${Green_font_prefix}3.${Font_color_suffix} 卸载 Trojan-go
   ${Green_font_prefix}4.${Font_color_suffix} 升级 Trojan-go 一键安装管理脚本
+  ${Green_font_prefix}3.${Font_color_suffix} 卸载 Trojan-go
   ${Green_font_prefix}5.${Font_color_suffix} 退出脚本
   ————————————————————————————————" && echo
 
@@ -235,7 +234,7 @@ start_menu() {
   fi
 
   echo
-  read -p "  请输入数字 [1-5]:" num
+  read -p "请输入数字 [1-5]:" num
   case "$num" in
   1)
     install_trojan_go
@@ -244,10 +243,10 @@ start_menu() {
     update_trojan_go
     ;;
   3)
-    uninstall_trojan_go
+    update_trojan_go_sh
     ;;
   4)
-    update_trojan_go_sh
+    uninstall_trojan_go
     ;;
   5)
     exit 1

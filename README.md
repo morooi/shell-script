@@ -5,5 +5,12 @@
 - 快速安装 Trojan-go：[trojan-go-quickstart.sh](./trojan-go-quickstart.sh)
   
   ``` bash
+  # 使用 root 用户运行，或添加 sudo
+  wget -N --no-check-certificate "https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh"
+  chmod +x trojan-go-quickstart.sh
+  ./trojan-go-quickstart.sh
+  # 或
+  bash <(wget -qO- https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh)
+  # 或
   bash <(curl -sL https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh)
   ```

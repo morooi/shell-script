@@ -12,7 +12,7 @@ cd `mktemp -d`
 wget -nv "${trojango_link}" -O trojan-go.zip
 unzip -q trojan-go.zip && rm -rf trojan-go.zip
 
-mv trojan-go /usr/bin/trojan-go/trojan-go
+mv trojan-go /usr/bin/trojan-go
 mv example/trojan-go.service /etc/systemd/system/trojan-go.service
 wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geosite.dat -O geosite.dat
 wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geoip.dat -O geoip.dat

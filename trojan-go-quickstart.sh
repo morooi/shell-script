@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-sh_ver="0.1.1"
+sh_ver="0.1.2"
 
 function prompt() {
   while true; do
@@ -164,19 +164,19 @@ update_trojan_go() {
 }
 
 update_trojan_go_sh() {
-  echo -e "当前版本为 ${Green_font_prefix}v.${sh_ver}${Font_color_suffix}, 开始检测最新版本.."
+  echo -e "当前版本为 ${Green_font_prefix}v${sh_ver}${Font_color_suffix}, 开始检测最新版本.."
   sh_new_ver=$(wget --no-check-certificate -qO- "https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh" | grep 'sh_ver="' | awk -F "=" '{print $NF}' | sed 's/\"//g' | head -1)
   [[ -z ${sh_new_ver} ]] && echo -e "${Red_font_prefix}[错误]${Font_color_suffix} 检测最新版本失败 !" && start_menu
 
   if [[ ${sh_new_ver} != ${sh_ver} ]]; then
-    echo -e "发现新版本[ ${sh_new_ver} ]，是否更新？[Y/n]"
+    echo -e "发现新版本[ v${sh_new_ver} ]，是否更新？[Y/n]"
     read -p "(默认: y):" yn
     [[ -z "${yn}" ]] && yn="y"
     if [[ ${yn} == [Yy] ]]; then
       wget -N --no-check-certificate https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh && chmod +x trojan-go-quickstart.sh
-      echo -e "脚本已更新为最新版本[ ${sh_new_ver} ] !"
+      echo -e "脚本已更新为最新版本 v${sh_new_ver} !"
     else
-      echo && echo "  已取消..." && echo
+      echo && echo "已取消..." && echo
     fi
   else
     echo
@@ -213,8 +213,8 @@ start_menu() {
   
   ${Green_font_prefix}1.${Font_color_suffix} 安装 Trojan-go
   ${Green_font_prefix}2.${Font_color_suffix} 升级 Trojan-go
-  ${Green_font_prefix}4.${Font_color_suffix} 升级 Trojan-go 一键安装管理脚本
-  ${Green_font_prefix}3.${Font_color_suffix} 卸载 Trojan-go
+  ${Green_font_prefix}3.${Font_color_suffix} 升级 Trojan-go 一键安装管理脚本
+  ${Green_font_prefix}4.${Font_color_suffix} 卸载 Trojan-go
   ${Green_font_prefix}5.${Font_color_suffix} 退出脚本
   ————————————————————————————————" && echo
 
@@ -253,7 +253,7 @@ start_menu() {
     ;;
   *)
     echo -e "${Red_font_prefix}[错误]${Font_color_suffix}:请输入正确数字 [1-5]"
-    sleep 3s
+    sleep 1s
     start_menu
     ;;
   esac

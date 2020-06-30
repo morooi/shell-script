@@ -159,7 +159,7 @@ update_trojan_go() {
     echo
     echo -e " ${Green_font_prefix} 更新成功..${Font_color_suffix} 当前 Trojan-go 版本: $v2ray_latest_ver"
   else
-    echo -e " ${Green_font_prefix} 没有发现新版本..${Font_color_suffix}"
+    echo && echo -e "${Green_font_prefix}没有发现新版本..${Font_color_suffix}"
   fi
 }
 
@@ -169,7 +169,7 @@ update_trojan_go_sh() {
   [[ -z ${sh_new_ver} ]] && echo -e "${Red_font_prefix}[错误]${Font_color_suffix} 检测最新版本失败 !" && start_menu
 
   if [[ ${sh_new_ver} != ${sh_ver} ]]; then
-    echo -e "发现新版本[ v${sh_new_ver} ]，是否更新？[Y/n]"
+    echo -e "发现新版本[ v${sh_new_ver} ], 是否更新？[Y/n]"
     read -p "(默认: y):" yn
     [[ -z "${yn}" ]] && yn="y"
     if [[ ${yn} == [Yy] ]]; then

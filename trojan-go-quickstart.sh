@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-sh_ver="0.1.2"
+sh_ver="0.1.3"
 
 function prompt() {
   while true; do
@@ -97,7 +97,32 @@ install_trojan_go() {
 
   echo Installing ${NAME} server config to ${CONFIGPATH}...
   if ! [[ -f "${CONFIGPATH}" ]] || prompt "The server config already exists in ${CONFIGPATH}, overwrite?"; then
-    install -Dm644 example/server.json "${CONFIGPATH}"
+    mkdir ${INSTALLPREFIX}/etc/${NAME}
+    cat >"${CONFIGPATH}" <<EOF
+{
+    "run_type": "server",
+    "local_addr": "0.0.0.0",
+    "local_port": 443,
+    "remote_addr": "127.0.0.1",
+    "remote_port": 80,
+    "password": [
+        "your_password"
+    ],
+    "ssl": {
+        "cert": "your_cert.crt",
+        "key": "your_key.key",
+        "sni": "your-domain-name.com"
+    },
+    "router":{
+        "geoip": "${INSTALLPREFIX}/etc/${NAME}/geoip.dat",
+        "geosite": "${INSTALLPREFIX}/etc/${NAME}/geosite.dat",
+        "enabled": true,
+        "block": [
+            "geoip:private"
+        ]
+    }
+}
+EOF
   else
     echo Skipping installing ${NAME} server config...
   fi
@@ -187,7 +212,6 @@ update_trojan_go_sh() {
 uninstall_trojan_go() {
   if prompt "是否卸载 Trojan-go"; then
     is_uninstall_trojan_go=true
-    echo
     echo -e "卸载 Trojan-go = ${Green_font_prefix}是${Font_color_suffix}"
   else
     echo

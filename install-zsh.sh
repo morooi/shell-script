@@ -4,19 +4,19 @@
 
 # fonts color
 red() {
-    echo -e "\[\033[0;31m\]"
+    echo -e "\033[31m$1\033[0m"
 }
 green() {
-    echo -e "\[\033[0;32m\]"
+    echo -e "\033[32m$1\033[0m"
 }
 yellow() {
-    echo -e "\[\033[0;33m\]"
+    echo -e "\033[33m$1\033[0m"
 }
 blue() {
-    echo -e "\[\033[0;34m\]"
+    echo -e "\033[34m$1\033[0m"
 }
 bold() {
-    echo -e "\033[1m\033[01m$1\033[0m"
+    echo -e "\033[1m$1\033[0m"
 }
 
 osRelease=""
@@ -90,13 +90,13 @@ install_oh_my_zsh() {
         sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     fi
 
-    yellow "安装 zsh-syntax-highlighting..."
     if [[ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]]; then
+        yellow "安装 zsh-syntax-highlighting..."
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
     fi
 
-    yellow "安装 zsh-autosuggestions..."
     if [[ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]]; then
+        yellow "安装 zsh-autosuggestions..."
         git clone https://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
     fi
 
@@ -106,15 +106,7 @@ install_oh_my_zsh() {
     sed -i 's/# HIST_STAMPS.*/HIST_STAMPS="yyyy-mm-dd"/' $zshConfig
     sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting extract z)/' $zshConfig
 
-    yellow "切换默认 shell 为 zsh"
-    zsh=$(which zsh)
-    if ! chsh -s "$zsh"; then
-        error "chsh command unsuccessful. Change your default shell manually."
-    else
-        green "=== Shell successfully changed to '$zsh' ==="
-    fi
-
-    echo "export TERM=xterm-256color" >> ${HOME}/.zshrc
+    echo "export TERM=xterm-256color" >>${HOME}/.zshrc
     source ${HOME}/.zshrc
     green "oh-my-zsh 安装并配置成功, 若显示不正常请重新登陆服务器..."
 }

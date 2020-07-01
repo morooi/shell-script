@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-sh_ver="0.1.3"
+sh_ver="0.1.4"
 
 function prompt() {
   while true; do
@@ -90,7 +90,6 @@ install_trojan_go() {
   echo Downloading ${NAME} ${TROJAN_GO_VER_LATEST}...
   wget -q "${DOWNLOADURL}" -O trojan-go.zip
   unzip -q trojan-go.zip && rm -rf trojan-go.zip
-  cd ${NAME}
 
   echo Installing ${NAME} ${TROJAN_GO_VER_LATEST} to ${BINARYPATH}...
   install -Dm755 "${NAME}" "${BINARYPATH}"
@@ -166,7 +165,8 @@ EOF
 
 update_trojan_go() {
   if [[ ${trojan_go_ver} != ${TROJAN_GO_VER_LATEST} ]]; then
-    echo -e " ${Green_font_prefix} 发现新版本..正在更新..${Font_color_suffix}"
+    echo
+    echo -e "${Green_font_prefix}发现新版本..正在更新..${Font_color_suffix}"
     echo
     echo -e "最新版本: ${TROJAN_GO_VER_LATEST}"
 
@@ -176,13 +176,13 @@ update_trojan_go() {
     echo -e "Downloading ${NAME} ${TROJAN_GO_VER_LATEST}..."
     wget -q "${DOWNLOADURL}" -O trojan-go.zip
     unzip -q trojan-go.zip && rm -rf trojan-go.zip
-    cd ${NAME}
 
     install -Dm755 "${NAME}" "${BINARYPATH}"
+    rm -rf "${TMPDIR}"
 
     do_service restart trojan-go
     echo
-    echo -e " ${Green_font_prefix} 更新成功..${Font_color_suffix} 当前 Trojan-go 版本: $v2ray_latest_ver"
+    echo -e "${Green_font_prefix}更新成功..${Font_color_suffix} 当前 Trojan-go 版本: ${TROJAN_GO_VER_LATEST}"
   else
     echo && echo -e "${Green_font_prefix}没有发现新版本..${Font_color_suffix}"
   fi

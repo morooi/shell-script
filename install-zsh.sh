@@ -100,13 +100,19 @@ install_oh_my_zsh() {
         git clone https://github.com/zsh-users/zsh-autosuggestions ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
     fi
 
+    if [[ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-completions" ]]; then
+        yellow "安装 zsh-completions..."
+        git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions
+    fi
+
     zshConfig=${HOME}/.zshrc
     zshTheme="ys"
     sed -i 's/ZSH_THEME=.*/ZSH_THEME="'${zshTheme}'"/' $zshConfig
     sed -i 's/# HIST_STAMPS.*/HIST_STAMPS="yyyy-mm-dd"/' $zshConfig
-    sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting extract z)/' $zshConfig
+    sed -i 's/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting extract z)/' $zshConfig
 
     echo "export TERM=xterm-256color" >>${HOME}/.zshrc
+    autoload -U compinit && compinit
     source ${HOME}/.zshrc
     green "oh-my-zsh 安装并配置成功, 若显示不正常请重新登陆服务器..."
 }

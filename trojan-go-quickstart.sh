@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-sh_ver="0.1.5"
+sh_ver="0.1.6"
 
 function prompt() {
   while true; do
@@ -178,6 +178,7 @@ update_trojan_go() {
     unzip -q trojan-go.zip && rm -rf trojan-go.zip
 
     install -Dm755 "${NAME}" "${BINARYPATH}"
+    echo 删除临时目录 ${TMPDIR}...
     rm -rf "${TMPDIR}"
 
     do_service restart trojan-go
@@ -200,6 +201,7 @@ update_trojan_go_sh() {
     if [[ ${yn} == [Yy] ]]; then
       wget -N --no-check-certificate https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh && chmod +x trojan-go-quickstart.sh
       echo -e "脚本已更新为最新版本 v${sh_new_ver} !"
+      exit
     else
       echo && echo "已取消..." && echot
     fi
@@ -230,10 +232,14 @@ uninstall_trojan_go() {
 }
 
 update_geo_files() {
-  echo Updating geoip/geosite files...
+  echo Updating geoip files...
 
-  wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geosite.dat -O ${INSTALLPREFIX}/etc/${NAME}/geosite.dat
-  wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geoip.dat -O ${INSTALLPREFIX}/etc/${NAME}/geoip.dat
+  wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geosite.dat -O ${INSTALLPREFIX}/etc/${NAME}/geosite.dat
+  
+  echo Updating geosite files...
+  wget -q https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geoip.dat -O ${INSTALLPREFIX}/etc/${NAME}/geoip.dat
+
+  do_service restart trojan-go
 
   echo -e "更新完成，所在目录：${INSTALLPREFIX}/etc/${NAME}"
 }
@@ -268,7 +274,7 @@ start_menu() {
   fi
 
   echo
-  read -p "请输入数字 [1-5]:" num
+  read -p "请输入数字 [1-6]:" num
   case "$num" in
   1)
     install_trojan_go
@@ -289,7 +295,7 @@ start_menu() {
     exit 1
     ;;
   *)
-    echo -e "${Red_font_prefix}[错误]${Font_color_suffix}:请输入正确数字 [1-5]"
+    echo -e "${Red_font_prefix}[错误]${Font_color_suffix}:请输入正确数字 [1-6]"
     sleep 1s
     start_menu
     ;;

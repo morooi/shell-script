@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-sh_ver="0.1.6"
+sh_ver="0.1.7"
 
 function prompt() {
   while true; do
@@ -157,6 +157,7 @@ EOF
   wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geosite.dat -O ${INSTALLPREFIX}/etc/${NAME}/geosite.dat
   wget https://github.com/Loyalsoldier/v2ray-rules-dat/raw/release/geoip.dat -O ${INSTALLPREFIX}/etc/${NAME}/geoip.dat
 
+  cd ~
   echo 删除临时目录 ${TMPDIR}...
   rm -rf "${TMPDIR}"
 
@@ -178,6 +179,7 @@ update_trojan_go() {
     unzip -q trojan-go.zip && rm -rf trojan-go.zip
 
     install -Dm755 "${NAME}" "${BINARYPATH}"
+    cd ~
     echo 删除临时目录 ${TMPDIR}...
     rm -rf "${TMPDIR}"
 
@@ -199,8 +201,9 @@ update_trojan_go_sh() {
     read -p "(默认: y):" yn
     [[ -z "${yn}" ]] && yn="y"
     if [[ ${yn} == [Yy] ]]; then
-      wget -N --no-check-certificate https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh && chmod +x trojan-go-quickstart.sh
+      wget -N --no-check-certificate https://raw.githubusercontent.com/morooi/shell-script/master/trojan-go-quickstart.sh
       echo -e "脚本已更新为最新版本 v${sh_new_ver} !"
+      chmod +x trojan-go-quickstart.sh
       exit
     else
       echo && echo "已取消..." && echot

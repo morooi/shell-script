@@ -62,9 +62,10 @@ install_zsh() {
     red "(请保证全程能流畅访问 Github)"
     green "=============================="
 
-    getLinuxOSVersion
-    # sudo $osSystemPackage update -y
-    sudo $osSystemPackage install curl wget git -y
+    if [ "$osRelease" == "debian" -a $(id -u) != 0 ]; then
+        echo -e " 请使用 root 用户运行"
+        exit 1
+    fi
 
     if [ "$osRelease" == "centos" ]; then
         sudo $osSystemPackage install zsh -y
@@ -72,12 +73,11 @@ install_zsh() {
     elif [ "$osRelease" == "ubuntu" ]; then
         sudo $osSystemPackage install zsh -y
     elif [ "$osRelease" == "debian" ]; then
-        sudo $osSystemPackage install zsh -y
+        $osSystemPackage install zsh -y
     fi
-
+    
     echo
-    yellow "==zsh 安装成功=="
-    echo
+    yellow "== zsh 安装成功 =="
     echo
 }
 
@@ -86,8 +86,28 @@ install_oh_my_zsh() {
     yellow "安装 oh-my-zsh"
     green "=============================="
 
+    if [ "$osRelease" == "debian" ]; then
+        $osSystemPackage install curl wget git -y
+    else
+        sudo $osSystemPackage install curl wget git -y
+    fi
+
     if [[ ! -d "${HOME}/.oh-my-zsh" ]]; then
         sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+
+    red "oh-my-zsh 安装完成，请切换至 zsh 后配置 oh-my-zsh"
+}
+
+config_oh_my_zsh() {
+    green "=============================="
+    yellow "配置 oh-my-zsh"
+    green "=============================="
+
+    if [ "$osRelease" == "debian" ]; then
+        $osSystemPackage install curl wget git -y
+    else
+        sudo $osSystemPackage install curl wget git -y
     fi
 
     if [[ ! -d "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]]; then
@@ -111,11 +131,42 @@ install_oh_my_zsh() {
     sed -i 's/# HIST_STAMPS.*/HIST_STAMPS="yyyy-mm-dd"/' $zshConfig
     sed -i 's/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting extract z)/' $zshConfig
 
-    echo "export TERM=xterm-256color" >>${HOME}/.zshrc
-    autoload -U compinit && compinit
-    source ${HOME}/.zshrc
-    green "oh-my-zsh 安装并配置成功, 若显示不正常请重新登陆服务器..."
+    echo "export TERM=xterm-256color" >> ${HOME}/.zshrc
+    # autoload -U compinit && compinit
+    # source ${HOME}/.zshrc
+    green "oh-my-zsh 配置成功, 请重新登陆服务器..."
 }
 
-install_zsh
-install_oh_my_zsh
+start_menu() {
+  getLinuxOSVersion
+  echo "zsh, oh-my-zsh 部署脚本"
+  echo "-- morooi.cn --"
+  
+  green "1. 安装 zsh"
+  green "2. 安装 oh-my-zsh"
+  green "3. 配置 oh-my-zsh 主题、插件"
+  green "4. 退出脚本"
+
+  echo
+  read -p "请输入数字 [1-4]:" num
+  case "$num" in
+  1)
+    install_zsh
+    ;;
+  2)
+    install_oh_my_zsh
+    ;;
+  3)
+    config_oh_my_zsh
+    ;;
+  4)
+    exit 1
+    ;;
+  *)
+    echo -e "${Red_font_prefix}[错误]${Font_color_suffix}:请输入正确数字 [1-4]"
+    start_menu
+    ;;
+  esac
+}
+
+start_menu

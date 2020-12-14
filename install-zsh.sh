@@ -145,7 +145,8 @@ start_menu() {
   green "1. 安装 zsh"
   green "2. 安装 oh-my-zsh"
   green "3. 配置 oh-my-zsh 主题、插件"
-  green "4. 退出脚本"
+  green "4. 全部执行"
+  green "5. 退出脚本"
 
   echo
   read -p "请输入数字 [1-4]:" num
@@ -160,6 +161,11 @@ start_menu() {
     config_oh_my_zsh
     ;;
   4)
+    install_zsh
+    install_oh_my_zsh
+    config_oh_my_zsh
+    ;;
+  5)
     exit 1
     ;;
   *)

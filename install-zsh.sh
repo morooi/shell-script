@@ -130,6 +130,8 @@ config_oh_my_zsh() {
     sed -i 's/ZSH_THEME=.*/ZSH_THEME="'${zshTheme}'"/' $zshConfig
     sed -i 's/# HIST_STAMPS.*/HIST_STAMPS="yyyy-mm-dd"/' $zshConfig
     sed -i 's/plugins=(git)/plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting extract z)/' $zshConfig
+    sed -i "s/# zstyle ':omz:update' mode auto/zstyle ':omz:update' mode auto/" $zshConfig
+    sed -i "s/# zstyle ':omz:update' frequency 13/zstyle ':omz:update' frequency 7/" $zshConfig
 
     echo "export TERM=xterm-256color" >> ${HOME}/.zshrc
     # autoload -U compinit && compinit
